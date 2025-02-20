@@ -6,7 +6,8 @@
  *
  * - Creating arrays that can store any data type
  * - Automatic capacity management with doubling strategy
- * - Adding elements
+ * - Adding elements (push)
+ * - Removing elements (pop)
  * - Accessing elements with proper type casting
  *
  * The example uses a User struct to show how to store complex types in the array.
@@ -15,6 +16,7 @@
  * - Pointer arithmetic with byte-level precision using char* casting
  * - Memory reallocation strategy
  * - Proper struct copying with memcpy
+ * - Error handling with status codes
  */
 
 #include <stdlib.h>
