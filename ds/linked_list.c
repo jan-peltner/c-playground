@@ -40,13 +40,25 @@ void walk_and_print_list(IntNode* node, PrinterFn pfn) {
     }
 }
 
+void some_fn(IntList* list) {
+    // Do some work...
+    int result = 50;
+
+    // Push a new node onto the linked list
+    // Because we allocate it on the heap it's going to be
+    // accessible even outside of this function's scope
+    push_node(list, result);
+}
+
 int main(void) {
-    IntList linked_list = {NULL, NULL};
+    IntList numbers = {NULL, NULL};
 
-    push_node(&linked_list, 5);
-    push_node(&linked_list, 10);
-    push_node(&linked_list, 20);
-    push_node(&linked_list, 40);
+    push_node(&numbers, 5);
+    push_node(&numbers, 10);
+    push_node(&numbers, 20);
+    push_node(&numbers, 40);
 
-    walk_and_print_list(linked_list.head, print_node);
+    some_fn(&numbers);
+
+    walk_and_print_list(numbers.head, print_node);
 }
