@@ -12,11 +12,13 @@
  *
  * The example uses a User struct to show how to store complex types in the array.
  * Key concepts demonstrated:
+ * - Stack allocation of control structures for better efficiency
  * - void pointer usage for type-agnostic storage
  * - Pointer arithmetic with byte-level precision using char* casting
  * - Memory reallocation strategy
  * - Proper struct copying with memcpy
  * - Error handling with status codes
+ * - Separation of allocation and initialization
  */
 
 #include <stdlib.h>
@@ -45,15 +47,13 @@ typedef struct {
 } DynArray;
 
 /**
- * Creates a new dynamic array for elements of the specified size.
+ * Initializes a dynamic array for elements of the specified size.
+ * The array struct itself should be allocated by the caller (typically on the stack).
  * 
  * @param size Size of each element in bytes (use sizeof())
- * @return Pointer to newly allocated dynamic array
+ * @param array Pointer to caller-allocated DynArray structure to initialize
  */
-DynArray* new_dyn_array(size_t size) {
-    /* Allocate the array control structure */
-    DynArray* array = malloc(sizeof(DynArray));
-    
+void new_dyn_array(size_t size, DynArray* array) {
     /* Initialize with default values */
     array->count = 0;
     array->cap = 2;         /* Start with small capacity */
@@ -61,8 +61,6 @@ DynArray* new_dyn_array(size_t size) {
     
     /* Allocate initial memory block for items */
     array->items = malloc(array->size * array->cap);
-    
-    return array;
 }
 
 /**
@@ -166,26 +164,28 @@ int main(void) {
     User user2 = {"bobo", 2};    
     User user3 = {"rigby", 3};    
     
-    /* Create dynamic array sized for User elements */
-    DynArray* array = new_dyn_array(sizeof(User));
+    /* Allocate array on the stack and initialize it */
+    DynArray array;
+    new_dyn_array(sizeof(User), &array);
+
     
     /* Add the users to the array */
-    push_dyn_array(array, &user1);
-    push_dyn_array(array, &user2);
-    push_dyn_array(array, &user3);
+    push_dyn_array(&array, &user1);
+    push_dyn_array(&array, &user2);
+    push_dyn_array(&array, &user3);
     
     /* Print the array contents */
-    print_user_array(array);
+    print_user_array(&array);
 
     /* Pop from array and print the popped User */
     User popped_user;
-    pop_dyn_array(array, &popped_user);
+    pop_dyn_array(&array, &popped_user);
     printf("Popped User - name: %s, id: %d\n", popped_user.name, popped_user.id);
-    print_user_array(array);
+    print_user_array(&array);
 
     /* Pop without providing the optional pointer */
-    pop_dyn_array(array, NULL);
-    print_user_array(array);
+    pop_dyn_array(&array, NULL);
+    print_user_array(&array);
     
     
     /* Clean-up would go here (free array) */ 
