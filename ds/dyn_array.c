@@ -125,8 +125,10 @@ int pop_dyn_array(DynArray* array, void* popped) {
         return 0;
     }
 
-    void* src = (char*)array->items + ((array->count - 1) * array->size);
-    memcpy(popped, src, array->size);
+    if (popped != NULL) {
+        void* src = (char*)array->items + ((array->count - 1) * array->size);
+        memcpy(popped, src, array->size);
+    }
 
     /* It's sufficient to just decrement the count.
      * On the next push, the popped item will be overwritten */
@@ -142,6 +144,7 @@ int pop_dyn_array(DynArray* array, void* popped) {
  * @param array Pointer to dynamic array containing User elements
  */
 void print_user_array(DynArray* array) {
+    printf("Array state:\n");
     for (size_t i = 0; i < array->count; ++i) {
         /* Calculate pointer to the i-th element
          * We cast to char* for byte-precise pointer arithmetic,
@@ -151,6 +154,7 @@ void print_user_array(DynArray* array) {
         /* Print the user's information */
         printf("Index: [%zu], name: %s, id: %d\n", i, user->name, user->id);
     }
+    printf("---\n");
 }
 
 /**
@@ -177,6 +181,13 @@ int main(void) {
     User popped_user;
     pop_dyn_array(array, &popped_user);
     printf("Popped User - name: %s, id: %d\n", popped_user.name, popped_user.id);
+    print_user_array(array);
+
+    /* Pop without providing the optional pointer */
+    pop_dyn_array(array, NULL);
+    print_user_array(array);
     
-    /* Clean-up would go here (free array) */ return 0;
+    
+    /* Clean-up would go here (free array) */ 
+    return 0;
 }
