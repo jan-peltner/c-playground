@@ -84,13 +84,13 @@ void print_node(IntNode* node) {
  * @param node Starting node for the walk
  * @param pfn Function to apply to each node
  */
-void walk_and_print_list(IntNode* node, NodeFn nfn) {
+void process_list(IntNode* node, NodeFn nfn) {
     /* Process current node */
     nfn(node);
     
     /* Recursively process remaining nodes */
     if (node->next != NULL) {
-        walk_and_print_list(node->next, nfn);
+        process_list(node->next, nfn);
     }
 }
 
@@ -125,7 +125,7 @@ int main(void) {
     some_fn(&numbers);
     
     /* Walk and print the entire list */
-    walk_and_print_list(numbers.head, print_node);
+    process_list(numbers.head, print_node);
 
     /* Memory cleanup would go here */
     return 0;
